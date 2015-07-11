@@ -1,18 +1,41 @@
 doctype html
-html
+html(ng-app="pokemonApp")
   head
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel="stylesheet",  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css")
   body
-  .container
-    .row
-      .col-xs-12
-        div
-          button(ui-sref="allPokemon") All Pokemon
-        div(ui-view)
-    script(src='./packages/jquery/dist/jquery.min.js')
-    script(src='./packages/bootstrap/dist/js/bootstrap.min.js')
-    script(src='./packages/lodash/lodash.min.js')
-    script(src='./packages/angular/angular.min.js')
-    script(src='./packages/angular-ui-router/release/angular-ui-router.min.js')
-    script(src='./index.js')
+    nav.navbar.navbar-inverse.navbar-fixed-top
+      #navbar.collapse.navbar-collapse
+        ul.nav.navbar-nav.navbar-right
+          li
+            a(ui-sref='allpokemon')
+              i.glyphicon.glyphicon-plus
+              | Browse Pokemon
+          li
+            a(ui-sref='mypokemon')
+              i.glyphicon.glyphicon-plus
+              | My Pokemon
+          li
+            a(ui-sref='profile')
+              i.glyphicon.glyphicon-plus
+              | Trainer Profile
+          li
+            a(ui-sref='register')
+              i.glyphicon.glyphicon-plus
+              | Register
+          li
+            a(ui-sref='login')
+              i.glyphicon.glyphicon-plus
+              | Login
+
+    .container
+      .row
+        .col-xs-12
+          div(ui-view)
+      script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.js')
+      script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js')
+      script(src='https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js')
+      script(src='https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.15/angular-ui-router.js')
+      script(src='/javascripts/index.js')
+      script(src='/javascripts/config.js')
