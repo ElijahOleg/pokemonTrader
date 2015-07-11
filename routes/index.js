@@ -1,38 +1,98 @@
-var express = require('express');
-var router = express.Router();
-var mongoose = require('mongoose')
-var passport = require('passport')
-var request = require('request')
-var async = require('async')
-GoogleStrategy = require('passport-google').Strategy
+var routes = function(passport) {
+  
+  var mongoose = require('mongoose')
+  var passport = require('passport')
+  var request = require('request')
+  var async = require('async')
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+  var express = require('express');
+  var Twitter = require("twitter");
+  var router = express.Router();
 
+  function twitterClient(params) {
+    return new Twitter({
+      consumer_key: process.env.CONSUMER_KEY,
+      consumer_secret: process.env.CONSUMER_SECRET,
+      access_token_key: params.access_token_key,
+      access_token_secret: params.access_token_secret
+    });
+  };
 
-router.get('http://pokeapi.co/api/v1/')
+  router.get('/auth/twitter', passport.authenticate('twitter'));
 
+  router.get('/auth/twitter/callback', passport.authenticate('twitter', { failureRedirect: '/' }), function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/');
+  });
 
+  router.post('/tweet', function(req, res, next) {
+    var client = twitterClient(req.body);
 
+    client.post('statuses/update', { status: req.body.tweet }, function(error, tweets, response){
+      if (error) {
+        console.error(error);
+        res.status(500);
+        return;
+      }
 
+      res.json(tweets);
+    });
+  });
 
+  router.post('/search', function(req, res, next) {
+    var client = twitterClient(req.body);
+    var words = req.body.words.toLowerCase().split(" ");
+    console.log(words);
 
+    client.get('search/tweets', { q: words.join(" OR "), count: 100 }, function(error, tweets, response){
+      if (error) {
+        console.error(error);
+        res.status(500);
+        return;
+      }
 
+      var stats = {}, oneTweetWords, lowerCaseWord, users = {};
 
+      tweets.statuses.forEach(function(tweet) {
+        oneTweetWords = tweet.text.toLowerCase().split(" ");
+        oneTweetWords.forEach(function(word) {
+          lowerCaseWord = word.toLowerCase();
+          if (words.indexOf(lowerCaseWord) >= 0) {
+            stats[word] = stats[word] || 0;
+            stats[word]++;
+            var ratio = tweet.user.friends_count/tweet.user.followers_count;
+            tweet.user.ratio = ratio > 1 ? 1.0/ratio : ratio;
+            users[tweet.user.screen_name] = tweet.user;
+          }
+        });
+      });
 
-// Redirect the user to Google for authentication.  When complete, Google
-// will redirect the user back to the application at
-//     /auth/google/return
-router.get('http://localhost:3000/auth/google', passport.authenticate('google'));
+      res.json({ stats: stats, users: users });
+    });
 
-// Google will redirect the user to this URL after authentication.  Finish
-// the process by verifying the assertion.  If valid, the user will be
-// logged in.  Otherwise, authentication has failed.
-router.get('http://localhost:3000/auth/google/return',
-  passport.authenticate('google', { successRedirect: '/',
-                                    failureRedirect: '/login' }));
+  });
 
+  router.post('/follow', function(req, res, next) {
+    var client = twitterClient(req.body);
 
-module.exports = router;
+    client.post('friendships/create', { screen_name: req.body.screen_name }, function(error, user, response){
+      if (error) {
+        console.error(error);
+        res.status(500);
+        return;
+      }
+
+      res.json(user);
+    });
+
+  });
+
+  router.get("/", function(req, res) {
+    res.render("index");
+  });
+
+  return router;
+}
+
+module.exports = routes;
+

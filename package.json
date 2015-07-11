@@ -16,8 +16,8 @@
     "gulp-jade": "^1.0.1",
     "jade": "~1.9.2",
     "morgan": "~1.5.3",
-    "passport": "^0.2.2",
-    "passport-google": "^0.3.0",
+    "passport": "latest",
+    "passport-twitter": "latest",
     "request": "^2.58.0",
     "require": "^2.4.19",
     "serve-favicon": "~2.2.1"
