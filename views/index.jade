@@ -1,0 +1,18 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+  .container
+    .row
+      .col-xs-12
+        div
+          button(ui-sref="allPokemon") All Pokemon
+        div(ui-view)
+    script(src='./packages/jquery/dist/jquery.min.js')
+    script(src='./packages/bootstrap/dist/js/bootstrap.min.js')
+    script(src='./packages/lodash/lodash.min.js')
+    script(src='./packages/angular/angular.min.js')
+    script(src='./packages/angular-ui-router/release/angular-ui-router.min.js')
+    script(src='./index.js')
