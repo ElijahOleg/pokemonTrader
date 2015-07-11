@@ -4,7 +4,6 @@ var mongoose = require('mongoose')
 var passport = require('passport')
 GoogleStrategy = require('passport-google').Strategy
 
-
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
