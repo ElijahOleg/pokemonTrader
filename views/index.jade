@@ -13,13 +13,17 @@ html(ng-app="pokemonApp")
               i.glyphicon.glyphicon-plus
               | Browse Pokemon
           li
-            a(ui-sref='mypokemon')
+            a(ui-sref='addpokemon')
               i.glyphicon.glyphicon-plus
-              | My Pokemon
+              | Add Pokemon
           li
             a(ui-sref='profile')
               i.glyphicon.glyphicon-plus
               | Trainer Profile
+          li
+            a(ui-sref='settings')
+              i.glyphicon.glyphicon-plus
+              | Profile Settings
           li
             a(ui-sref='register')
               i.glyphicon.glyphicon-plus
@@ -28,6 +32,10 @@ html(ng-app="pokemonApp")
             a(href="/auth/google" ui-sref='login')
               i.glyphicon.glyphicon-plus
               | Login with Google
+          li
+            a(ui-sref='#')
+              i.glyphicon.glyphicon-plus
+              | Logout
 
     .container
       .row

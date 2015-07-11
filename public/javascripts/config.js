@@ -15,29 +15,25 @@ angular.module("pokemonApp")
       url: '/login',
       templateUrl: '/views/login.html'
     })
-    .state('allPokemon', {
+    .state('allpokemon', {
       url: '/allpokemon',
-      templateUrl: '/views/allPokemon.html'
+      templateUrl: '/views/allpokemon.html'
     })
     .state('profile', {
       url: '/profile',
       templateUrl: '/views/profile.html'
     })
-    .state('myPokemon', {
-      url: '/myPokemon',
-      templateUrl: '/views/myPokemon.html'
-    })
     .state('settings', {
       url: '/settings',
       templateUrl: '/views/settings.html'
     })
-    .state('addPokemon', {
-      url: '/addPokemon',
-      templateUrl: '/views/addPokemon.html'
+    .state('addpokemon', {
+      url: '/addpokemon',
+      templateUrl: '/views/addpokemon.html'
     })
-    .state('onePokemon', {
-      url: '/onePokemon',
-      templateUrl: '/views/home/onePokemon.html'
+    .state('onepokemon', {
+      url: '/onepokemon',
+      templateUrl: '/views/home/onepokemon.html'
     });
   // .state('user', {
   // 	url: '',
