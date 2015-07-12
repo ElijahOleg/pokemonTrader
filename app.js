@@ -25,17 +25,23 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+
+
+app.use(session({
+  secret: 'hellokitty',
+  proxy: true,
+  resave: true,
+  saveUninitialized: true
+})); 
 
 require('./config/passport')(passport);
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.use('/', routes);
 app.use('/users', users);
-
-app.use(session({ secret: 'ilovescotchscotchyscotchscotch' })); 
-
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

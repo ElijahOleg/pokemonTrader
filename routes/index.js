@@ -1,5 +1,5 @@
-var routes = function(passport) {
-  
+var routes = function (passport) {
+
   var mongoose = require('mongoose')
   var passport = require('passport')
   var request = require('request')
@@ -18,81 +18,57 @@ var routes = function(passport) {
     });
   };
 
-  router.get('/auth/twitter', passport.authenticate('twitter'));
+  router.get('/auth/twitter', passport.authenticate('twitter'), 
+             function(req, res){});
 
-  router.get('/auth/twitter/callback', passport.authenticate('twitter', { failureRedirect: '/' }), function(req, res) {
-    // Successful authentication, redirect home.
-    res.redirect('/');
-  });
+//  router.get('/auth/twitter/callback', passport.authenticate('twitter', {
+//    failureRedirect: '/'
+//  }), function (req, res) {
+//    console.log("getting callback");
+//    // Successful authentication, redirect home.
+//    res.redirect('/');
+//  });
 
-  router.post('/tweet', function(req, res, next) {
-    var client = twitterClient(req.body);
 
-    client.post('statuses/update', { status: req.body.tweet }, function(error, tweets, response){
-      if (error) {
-        console.error(error);
-        res.status(500);
-        return;
-      }
-
-      res.json(tweets);
-    });
-  });
-
-  router.post('/search', function(req, res, next) {
-    var client = twitterClient(req.body);
-    var words = req.body.words.toLowerCase().split(" ");
-    console.log(words);
-
-    client.get('search/tweets', { q: words.join(" OR "), count: 100 }, function(error, tweets, response){
-      if (error) {
-        console.error(error);
-        res.status(500);
-        return;
-      }
-
-      var stats = {}, oneTweetWords, lowerCaseWord, users = {};
-
-      tweets.statuses.forEach(function(tweet) {
-        oneTweetWords = tweet.text.toLowerCase().split(" ");
-        oneTweetWords.forEach(function(word) {
-          lowerCaseWord = word.toLowerCase();
-          if (words.indexOf(lowerCaseWord) >= 0) {
-            stats[word] = stats[word] || 0;
-            stats[word]++;
-            var ratio = tweet.user.friends_count/tweet.user.followers_count;
-            tweet.user.ratio = ratio > 1 ? 1.0/ratio : ratio;
-            users[tweet.user.screen_name] = tweet.user;
-          }
-        });
-      });
-
-      res.json({ stats: stats, users: users });
-    });
-
-  });
-
-  router.post('/follow', function(req, res, next) {
-    var client = twitterClient(req.body);
-
-    client.post('friendships/create', { screen_name: req.body.screen_name }, function(error, user, response){
-      if (error) {
-        console.error(error);
-        res.status(500);
-        return;
-      }
-
-      res.json(user);
-    });
-
-  });
-
-  router.get("/", function(req, res) {
+  router.get("/", function (req, res) {
     res.render("index");
   });
+  
+  mongoose.connect(process.env.MONGO_URL);
+  
+//  export MONGO_URL=mongodb://localhost/pokemontrader
+  
+  
+  var traderSchema = mongoose.Schema({
+    trainer_name: { type: String },
+    user_name: { type: String }, 
+    friend_code: { type: String },
+    owned_pokemon: [{name: {type: String}}],
+    email: { type: String },
+    password: { type: String }
+  });
+  
+  var Traders = mongoose.model("Traders", traderSchema);
+  
+  router.post("/trader", function(req, res) {
+    console.log("getting something");
+    var trader = new Traders(req.body.trainer_name);
+    console.log(req.body.trainer_name);
+
+    trader.trainer_name = req.body.trainer_name;
+
+    trader.save(function(err, trainerName) {
+      if (err) {
+        console.log(err);
+        res.status(400).json({ error: "Validation Failed" });
+      }
+      console.log("new trainer:", trainerName);
+      res.json(trainerName);
+    });
+  });
+  
 
   return router;
 }
 
 module.exports = routes;
-

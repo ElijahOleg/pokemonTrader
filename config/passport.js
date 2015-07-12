@@ -10,12 +10,14 @@ module.exports = function(passport) {
 
   // used to serialize the user for the session
   passport.serializeUser(function(user, done) {
+    console.log(user);
     done(null, user.id);
   });
 
   // used to deserialize the user
   passport.deserializeUser(function(id, done) {
     User.findById(id, function(err, user) {
+      console.log(user);
       done(err, user);
     });
   });
@@ -35,7 +37,7 @@ module.exports = function(passport) {
     process.nextTick(function() {
 
       User.findOne({ 'twitter.id' : profile.id }, function(err, user) {
-
+        console.log(user);
         // if there is an error, stop everything and return that
         // ie an error connecting to the database
         if (err)
@@ -46,7 +48,7 @@ module.exports = function(passport) {
           return done(null, user); // user found, return that user
         } else {
           // if there is no user, create them
-          var newUser                 = new User();
+          var newUser = new User();
 
           // set all of the user data that we need
           newUser.twitter.id          = profile.id;
