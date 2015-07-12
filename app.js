@@ -5,12 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var passport = require('passport');
-var session = require('express-session');
-var mongoose = require('mongoose');
-var configDB = require('./config/database.js');
-
-var routes = require('./routes/index')(passport);
+var routes = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
@@ -25,19 +20,6 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-
-
-app.use(session({
-  secret: 'hellokitty',
-  proxy: true,
-  resave: true,
-  saveUninitialized: true
-})); 
-
-require('./config/passport')(passport);
-app.use(passport.initialize());
-app.use(passport.session()); // persistent login sessions
-
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);

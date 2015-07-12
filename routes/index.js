@@ -1,9 +1,7 @@
-var routes = function (passport) {
-
-  var mongoose = require('mongoose')
-  var passport = require('passport')
-  var request = require('request')
-  var async = require('async')
+  var mongoose = require('mongoose');
+  var passport = require('passport');
+  var request = require('request');
+  var async = require('async');
 
   var express = require('express');
   var Twitter = require("twitter");
@@ -36,7 +34,7 @@ var routes = function (passport) {
   
   mongoose.connect(process.env.MONGO_URL);
   
-//  export MONGO_URL=mongodb://localhost/pokemontrader
+//  export MONGO_URL=mongodb://localhost/test
   
   
   var traderSchema = mongoose.Schema({
@@ -66,9 +64,5 @@ var routes = function (passport) {
       res.json(trainerName);
     });
   });
-  
 
-  return router;
-}
-
-module.exports = routes;
+module.exports = router;
